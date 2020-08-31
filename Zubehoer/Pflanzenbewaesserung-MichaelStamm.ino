@@ -2,7 +2,7 @@
 #include <LiquidCrystal.h>
 
 typedef enum _Display_EZustand
-{ 
+{
   AUSGABE_DIFFERENZ = 0,
   AUSGABE_WERT,
   AUSGABE_TEST,
@@ -42,9 +42,9 @@ LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
 //define SENSOR4 A4
 
 // Digitale Ausgangspinne fuer die Pumpen festlegen
-#define PUMPE1 11
+#define PUMPE1 13
 #define PUMPE2 12
-#define PUMPE3 13
+#define PUMPE3 11
 
 #define KONTROLLZEIT 300000L  // 300 sec
 #define WARTEZEIT     40000   //  40 sec
@@ -63,7 +63,7 @@ uint32_t aui32Pumpzeit [ANZAHL_PFLANZEN] = {0, 0, 0};
 uint32_t aui32LetztePumpzeit [ANZAHL_PFLANZEN] = {0, 0, 0};
 boolean abPumpeAktiv [ANZAHL_PFLANZEN] = {false, false, false};
 boolean abPumpeGesperrt [ANZAHL_PFLANZEN] = {false, false, false};
-char acPosition [ANZAHL_PFLANZEN] = {'L', 'M', 'R'};
+char acPosition [ANZAHL_PFLANZEN] = {'X', 'L', 'R'};
 
 uint32_t ui32PumpenStart = 0;
 uint32_t ui32Zeit_ZehntelSekunden = 0;
@@ -103,10 +103,10 @@ void setup()
  lcd.begin(16, 2);              // start the library
  lcd.setCursor(0,0);
  lcd.print("Topf L: ");         // print a simple message
- 
+
  ui32Zeit_Merker = millis();
 }
- 
+
 void loop()
 {
   int16_t i = 0;
@@ -215,7 +215,7 @@ void loop()
         lcd.print(":         ");
         lcd.setCursor(8,0);            // move cursor to first line "0" position 8
         lcd.print(ai16Sollwert[i16AusgabeIndex] - ai16Messwert[i16AusgabeIndex]);
-        lcd.setCursor(0,1);            // move cursor to second line "1" 
+        lcd.setCursor(0,1);            // move cursor to second line "1"
         if (abPumpeGesperrt[i16AusgabeIndex])
         {
           lcd.print("Pumpe gesperrt  ");
@@ -258,7 +258,7 @@ void loop()
         lcd.print(":         ");
         lcd.setCursor(8,0);            // move cursor to first line "0" position 8
         lcd.print(ai16Messwert[i16AusgabeIndex]);
-        lcd.setCursor(0,1);            // move cursor to second line "1" 
+        lcd.setCursor(0,1);            // move cursor to second line "1"
         if (abPumpeGesperrt[i16AusgabeIndex])
         {
           lcd.print("Pumpe gesperrt  ");
@@ -303,13 +303,13 @@ void loop()
 
         lcd.setCursor(0,0);
         lcd.print("Test   L   M   R");
-        lcd.setCursor(0,1);            // move cursor to second line "1" 
+        lcd.setCursor(0,1);            // move cursor to second line "1"
         lcd.print("Taste SEL  L   R");
         if (i16Taste == btnUP)
         {
           Display_Zustand = AUSGABE_WERT;
         }
-        lcd.setCursor(0,1);            // move cursor to second line "1" 
+        lcd.setCursor(0,1);            // move cursor to second line "1"
         switch (i16Pumpentest)
         { // ueberschreibt den Pumpenausgang aus der Feuchtigkeitsmessung
           case btnRIGHT:
@@ -347,7 +347,7 @@ void loop()
 
         break;
       } // AUSGABE_TEST
-    
+
     } //switch (Display_Zustand)
 
   } // Ende bMessungaAktiv (Zyklischer Aufruf alle 100ms)
@@ -371,28 +371,28 @@ void Zeit_ausgeben(const uint32_t ui32Millisekunden)
 // read the buttons
 int16_t read_LCD_buttons()
 {
-  int16_t adc_key_in  =  analogRead(0);      // read the value from the sensor 
+  int16_t adc_key_in  =  analogRead(0);      // read the value from the sensor
   // my buttons when read are centered at these valies: 0, 144, 329, 504, 741
   // we add approx 50 to those values and check to see if we are close
 
   if (adc_key_in > 1000) return btnNONE; // We make this the 1st option for speed reasons since it will be the most likely result
 
   // For V1.1 us this threshold
-  /* 
-   if (adc_key_in < 50)   return btnRIGHT;  
-   if (adc_key_in < 250)  return btnUP; 
-   if (adc_key_in < 450)  return btnDOWN; 
-   if (adc_key_in < 650)  return btnLEFT; 
-   if (adc_key_in < 850)  return btnSELECT;   
+  /*
+   if (adc_key_in < 50)   return btnRIGHT;
+   if (adc_key_in < 250)  return btnUP;
+   if (adc_key_in < 450)  return btnDOWN;
+   if (adc_key_in < 650)  return btnLEFT;
+   if (adc_key_in < 850)  return btnSELECT;
   */
 
   // For V1.0 comment the other threshold and use the one below:
 
-  if (adc_key_in < 50)   return btnRIGHT;  
-  if (adc_key_in < 195)  return btnUP; 
-  if (adc_key_in < 380)  return btnDOWN; 
-  if (adc_key_in < 555)  return btnLEFT; 
-  if (adc_key_in < 790)  return btnSELECT;   
+  if (adc_key_in < 50)   return btnRIGHT;
+  if (adc_key_in < 195)  return btnUP;
+  if (adc_key_in < 380)  return btnDOWN;
+  if (adc_key_in < 555)  return btnLEFT;
+  if (adc_key_in < 790)  return btnSELECT;
 
   return btnNONE;  // when all others fail, return this...
 }
